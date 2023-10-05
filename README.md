@@ -68,7 +68,7 @@ Add the following code to your project's `AppDelegate.mm`
 
 ### Retrieve current interface and device orientations:
 
-```js
+```ts
 import Orientations from "react-native-orientation-manager";
 import type { InterfaceOrientation, DeviceOrientation } from "react-native-orientation-manager";
 
@@ -78,7 +78,7 @@ const currentDeviceOrientation: DeviceOrientation = Orientations.deviceOrientati
 
 ### Use current interface and device orientations as state hooks:
 
-```js
+```tsx
 import { Text } from "react-native";
 import { useInterfaceOrientation, useDeviceOrientation } from "react-native-orientation-manager";
 
@@ -102,7 +102,7 @@ function OrientationValues(): React.JSX.Element
 
 ### Lock interface orientation to a specific orientation:
 
-```js
+```ts
 import { lockToLandscape, lockToPortrait, unlockAllOrientations, resetInterfaceOrientationSetting } from "react-native-orientation-manager";
 
 lockToLandscape();
@@ -117,7 +117,7 @@ resetInterfaceOrientationSetting();
 
 ### Listen to orientation changes:
 
-```js
+```ts
 import { addInterfaceOrientationChangeListener, addDeviceOrientationChangeListener } from "react-native-orientation-manager";
 import type { InterfaceOrientation, DeviceOrientation } from "react-native-orientation-manager";
 
@@ -138,7 +138,7 @@ const listenerRemover2 = addDeviceOrientationChangeListener((deviceOrientation: 
 
 ### Do something every time the interface orientation changes while a screen is focused (requires @react-navigation/native 5x or higher):
 
-```js
+```ts
 import { useInterfaceOrientationWhenFocusedEffect } from "react-native-orientation-manager";
 import type { InterfaceOrientation } from "react-native-orientation-manager";
 import { useNavigation } from "@react-navigation/native";
