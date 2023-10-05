@@ -218,7 +218,7 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
 
     private void postInterfaceOrientationChangeDetectorDelayed()
     {
-        mHandler.postDelayed(mInterfaceOrientationChangeDetector, 300);
+        mHandler.postDelayed(mInterfaceOrientationChangeDetector, 100);
     }
 
     private synchronized void sendInterfaceOrientationChangedIfOccurred()
