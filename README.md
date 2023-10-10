@@ -10,19 +10,39 @@ A React Native module to retrieve interface/device orientation, listen to orient
 
 ## Installation
 
-### npm
+### Using npm
 
 ```sh
 npm install react-native-orientation-manager
 ```
 
-### yarn
+### Using yarn
 
 ```sh
 yarn add react-native-orientation-manager
 ```
 
+### iOS Only:
+Make sure pods are installed by navigating to the iOS project and running:
+```sh
+bundle exec pod install
+```
+
 ## Additional Configuration
+
+To ensure that the module is fully initialized during app startup, include this import statement in your app's entry file (`index.*` or `App.*`):
+```js
+import "react-native-orientation-manager";
+```
+For example:
+```ts
+import "react-native-orientation-manager";
+import { AppRegistry } from "react-native";
+import App from "./src/App";
+import { name as appName } from "./app.json";
+
+AppRegistry.registerComponent(appName, () => App);
+```
 
 ### Android
 

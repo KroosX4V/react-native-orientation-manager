@@ -1,0 +1,104 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"node_modules": true,
+			"example/node_modules": true,
+		}
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Start: Android - Emulator",
+				"dependsOn": ["Metro", "Emulator: Android", "Delayed Android Installation Initializer"],
+				"problemMatcher": [],
+			},
+			{
+				"label": "Start: Android - Physical Device",
+				"dependsOn": ["Metro", "Install App: Android"],
+				"problemMatcher": [],
+			},
+			{
+				"label": "Start: iOS - Emulator",
+				"dependsOn": ["Metro", "Install App: iOS"],
+				"problemMatcher": [],
+			},
+			{
+				"label": "Start: Windows",
+				"dependsOn": ["Metro", "Install App: Windows"],
+				"problemMatcher": [],
+			},
+			{
+				"label": "Metro",
+				"type": "shell",
+				"command": "yarn example start",
+				"presentation": {
+					"panel": "dedicated",
+					"clear": true
+				},
+				"problemMatcher": [],
+			},
+			{
+				"label": "Install App: Android",
+				"type": "shell",
+				"command": "yarn example android",
+				"presentation": {
+					"panel": "dedicated",
+					"clear": true
+				},
+				"problemMatcher": [],
+			},
+			{
+				"label": "Install App: iOS",
+				"type": "shell",
+				"command": "yarn example ios",
+				"presentation": {
+					"panel": "dedicated",
+					"clear": true
+				},
+				"problemMatcher": [],
+			},
+			{
+				"label": "Install App: Windows",
+				"type": "shell",
+				"command": "yarn example windows",
+				"presentation": {
+					"panel": "dedicated",
+					"clear": true
+				},
+				"problemMatcher": [],
+			},
+			{
+				"label": "Emulator: Android",
+				"type": "shell",
+				"command": "emulator @Pixel_3a_API_33_x86_64",
+				"presentation": {
+					"panel": "dedicated",
+					"clear": true
+				},
+				"problemMatcher": [],
+			},
+			{
+				"label": "Delayed Android Installation Initializer",
+				"dependsOrder": "sequence",
+				"dependsOn": ["Delayed Android Installation", "Install App: Android"],
+				"problemMatcher": []
+			},
+			{
+				"label": "Delayed Android Installation",
+				"type": "shell",
+				"command": "echo \"Installing Android app in 15 seconds.\" && timeout /T 15 /nobreak >nul 2>&1",
+				"presentation": {
+					"panel": "dedicated",
+					"close": true,
+				},
+				"problemMatcher": []
+			}
+		]
+	},
+}

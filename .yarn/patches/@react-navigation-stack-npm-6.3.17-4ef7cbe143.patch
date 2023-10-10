@@ -1,0 +1,13 @@
+diff --git a/src/views/Stack/Card.tsx b/src/views/Stack/Card.tsx
+index 64a551ef46ca7d7ff8941997dd116fecbda70295..fb7fc1f2ace898803198aa6dcdb6a64c920af9cc 100644
+--- a/src/views/Stack/Card.tsx
++++ b/src/views/Stack/Card.tsx
+@@ -517,7 +517,7 @@ export default class Card extends React.Component<Props> {
+           // Make sure that this view isn't removed. If this view is removed, our style with animated value won't apply
+           collapsable={false}
+         />
+-        <View pointerEvents="box-none" {...rest}>
++        <View pointerEvents={rest.pointerEvents || "box-none"} style={rest.style} accessibilityElementsHidden={rest.accessibilityElementsHidden}>
+           {overlayEnabled ? (
+             <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+               {overlay({ style: overlayStyle })}

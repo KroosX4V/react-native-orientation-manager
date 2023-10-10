@@ -1,6 +1,6 @@
 {
     "name": "react-native-orientation-manager",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "A React Native module to retrieve interface/device orientation, listen to orientation changes, and lock screen to a specific orientation.",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
@@ -24,74 +24,13 @@
         "!**/__tests__",
         "!**/__fixtures__",
         "!**/__mocks__",
-        "!**/.*",
-        "!windows/*AppPackages*",
-        "!windows/*BundleArtifacts*",
-        "!windows/[Tt]humbs.db",
-        "!windows/*.DS_Store",
-        "!windows/*.[Oo]bj",
-        "!windows/*.user",
-        "!windows/*.aps",
-        "!windows/*.pch",
-        "!windows/*.vspscc",
-        "!windows/*.vssscc",
-        "!windows/*_i.c",
-        "!windows/*_p.c",
-        "!windows/*.ncb",
-        "!windows/*.suo",
-        "!windows/*.tlb",
-        "!windows/*.tlh",
-        "!windows/*.bak",
-        "!windows/*.[Cc]ache",
-        "!windows/*.ilk",
-        "!windows/*.log",
-        "!windows/*.lib",
-        "!windows/*.sbr",
-        "!windows/*.sdf",
-        "!windows/*.opensdf",
-        "!windows/*.opendb",
-        "!windows/*.unsuccessfulbuild",
-        "!windows/ipch/",
-        "!windows/[Oo]bj/",
-        "!windows/[Bb]in",
-        "!windows/[Dd]ebug*/",
-        "!windows/[Rr]elease*/",
-        "!windows/Ankh.NoLoad",
-        "!windows/ipch/",
-        "!windows/*.aps",
-        "!windows/*.ncb",
-        "!windows/*.opendb",
-        "!windows/*.opensdf",
-        "!windows/*.sdf",
-        "!windows/*.cachefile",
-        "!windows/*.VC.db",
-        "!windows/*.VC.VC.opendb",
-        "!windows/*.pidb",
-        "!windows/*.userprefs",
-        "!windows/_ReSharper*/",
-        "!windows/*.resharper",
-        "!windows/[Tt]est[Rr]esult*",
-        "!windows/*.sass-cache",
-        "!windows/[Bb]uild/",
-        "!windows/.svn",
-        "!windows/~$*",
-        "!windows/*~",
-        "!windows/packages/",
-        "!windows/*.nupkg",
-        "!windows/*ncrunch*",
-        "!windows/*crunch*.local.xml",
-        "!windows/*.dbmdl",
-        "!windows/*.testsettings",
-        "!windows/*.DotSettings",
-        "!windows/.vs/",
-        "!windows/*project.lock.json",
-        "!windows/**/Generated Files/**"
+        "!**/.*"
     ],
     "scripts": {
+        "example": "yarn workspace react-native-orientation-manager-example",
         "test": "jest",
         "typecheck": "tsc --noEmit",
         "lint": "eslint \"**/*.{js,ts,tsx}\"",
-        "clean": "del-cli android/build lib",
         "prepare": "bob build",
         "release": "release-it"
     },
@@ -99,7 +38,8 @@
         "react-native",
         "ios",
         "android",
-        "windows"
+        "windows",
+        "orientation"
     ],
     "repository": "https://github.com/KroosX4V/react-native-orientation-manager",
     "author": "KroosX4V <hasxt23@gmail.com>",
@@ -116,10 +56,9 @@
         "@react-native/eslint-config": "^0.72.2",
         "@release-it/conventional-changelog": "^5.0.0",
         "@types/jest": "^28.1.2",
-        "@types/react": "~17.0.21",
-        "@types/react-native": "0.70.0",
+        "@types/react": "18.2.25",
+        "@types/react-native": "0.72.3",
         "commitlint": "^17.0.2",
-        "del-cli": "^5.0.0",
         "eslint": "^8.4.1",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.0.0",
@@ -130,11 +69,7 @@
         "react-native-builder-bob": "^0.20.0",
         "react-native-windows": "0.72.10",
         "release-it": "^15.0.0",
-        "turbo": "^1.10.7",
         "typescript": "^5.0.2"
-    },
-    "resolutions": {
-        "@types/react": "17.0.21"
     },
     "peerDependencies": {
         "@react-navigation/native": ">= 5.0.0",
@@ -146,6 +81,13 @@
             "optional": true
         }
     },
+    "resolutions": {
+        "@react-navigation/stack@6.3.17": "patch:@react-navigation/stack@npm%3A6.3.17#./.yarn/patches/@react-navigation-stack-npm-6.3.17-4ef7cbe143.patch",
+        "react-native-screens@3.24.0": "patch:react-native-screens@npm%3A3.24.0#./.yarn/patches/react-native-screens-npm-3.24.0-0887b5e74d.patch"
+    },
+    "workspaces": [
+        "example"
+    ],
     "packageManager": "yarn@3.6.1",
     "engines": {
         "node": ">= 16.0.0"
@@ -153,6 +95,7 @@
     "jest": {
         "preset": "react-native",
         "modulePathIgnorePatterns": [
+            "<rootDir>/example/node_modules",
             "<rootDir>/lib/"
         ]
     },
@@ -217,7 +160,7 @@
             [
                 "typescript",
                 {
-                    "project": "tsconfig.json"
+                    "project": "tsconfig.build.json"
                 }
             ]
         ]

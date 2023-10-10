@@ -160,7 +160,7 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void resetInterfaceOrientationSetting(Promise promise)
     {
-        lockToOrientation(promise, ActivityInfo.SCREEN_ORIENTATION_USER);
+        lockToOrientation(promise, ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
     @SuppressWarnings("unused")

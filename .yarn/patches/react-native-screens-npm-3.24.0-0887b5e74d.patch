@@ -1,0 +1,21 @@
+diff --git a/windows/RNScreens/RNScreens.vcxproj b/windows/RNScreens/RNScreens.vcxproj
+index 679da2844a0d7a876f7d003e0da8e6725233dca8..8e3d195877de6f9ad37fa2b717087aa67c804768 100644
+--- a/windows/RNScreens/RNScreens.vcxproj
++++ b/windows/RNScreens/RNScreens.vcxproj
+@@ -14,7 +14,7 @@
+     <ApplicationType>Windows Store</ApplicationType>
+     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+     <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0.18362.0</WindowsTargetPlatformVersion>
+-    <WindowsTargetPlatformMinVersion>10.0.16299.0</WindowsTargetPlatformMinVersion>
++    <WindowsTargetPlatformMinVersion>10.0.17763.0</WindowsTargetPlatformMinVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Label="ReactNativeWindowsProps">
+@@ -56,6 +56,7 @@
+   </ItemGroup>
+   <PropertyGroup Label="Configuration">
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
++    <PlatformToolset>v142</PlatformToolset>
+     <CharacterSet>Unicode</CharacterSet>
+     <GenerateManifest>false</GenerateManifest>
+   </PropertyGroup>
