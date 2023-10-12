@@ -122,6 +122,7 @@ function OrientationValues(): React.JSX.Element
 
 ### Lock interface orientation to a specific orientation:
 
+### Using functions:
 ```ts
 import { lockToLandscape, lockToPortrait, unlockAllOrientations, resetInterfaceOrientationSetting } from "react-native-orientation-manager";
 
@@ -133,6 +134,20 @@ unlockAllOrientations();
 
 // remove lock
 resetInterfaceOrientationSetting();
+```
+### Using `OrientationLocker` component:
+```tsx
+import { View } from "react-native";
+import { OrientationLocker } from "react-native-orientation-manager";
+
+function LandscapeOnlyScreen(): React.JSX.Element
+{
+    return (
+        <View style={{ flex: 1 }}>
+            <OrientationLocker lock="Landscape" />
+        </View>
+    );
+}
 ```
 
 ### Listen to orientation changes:
@@ -248,10 +263,17 @@ function SomeComponent(): React.JSX.Element
 | --- | --- |
 | `async resetInterfaceOrientationSetting()` | Promise\<void\> |
 
+## Component OrientationLocker
+| Prop | Type | Value |
+| --- | --- | --- |
+| `lock` | string | Can be one of the following:<ul><li>`"Portrait"`: Locks to portrait only. Same as `lockToPortrait()`</li><li>`"PortraitUpsideDown"`: Locks to portrait upside down only. Same as `lockToPortraitUpsideDown()`</li><li>`"LandscapeLeft"`: Locks to landscape left only. Same as `lockToLandscapeLeft()`</li><li>`"LandscapeRight"`: Locks to landscape right only. Same as `lockToLandscapeRight()`</li><li>`"Landscape"`: Locks to landscape left or right only. Same as `lockToLandscape()`</li><li>`"AllButUpsideDown"`: Locks to all orientations except portrait upside down. Same as `lockToAllOrientationsButUpsideDown()`. Not supported on Android</li><li>`"All"`: Unlocks all orientations. Same as `unlockAllOrientations()`</li><ul> |
+
 ## Hooks:
 
 | Hook | Return Type | Functionality
 | --- | --- | --- |
-| `useInterfaceOrientation()` | InterfaceOrientation | Uses current interface orientation as a state
-| `useDeviceOrientation()` | DeviceOrientation | Uses current device orientation as a state
-| `useInterfaceOrientationWhenFocusedEffect(effect: (interfaceOrientation: InterfaceOrientation) => ((...args: any) => any) \| undefined)` | void | Runs every time interface orientation changes while a screen is focused or when it's just been focused. You can return a cleanup function that's called before when the effect function must be called again
+| `useInterfaceOrientation()` | InterfaceOrientation | Uses current interface orientation as a state |
+| `useDeviceOrientation()` | DeviceOrientation | Uses current device orientation as a state |
+| `useInterfaceOrientationEffect(`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`effect: (interfaceOrientation: InterfaceOrientation) => CleanupFunction \| undefined,`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`dependencies: any[] = [],`<BR>`)` | void | This runs on mount and subsequently whenever the interface orientation changes or when dependencies change during a re-render |
+| `useDeviceOrientationEffect(`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`effect: (deviceOrientation: DeviceOrientation) => CleanupFunction \| undefined,`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`dependencies: any[] = [],`<BR>`)` | void | This runs on mount and subsequently whenever the device orientation changes or when dependencies change during a re-render |
+| `useInterfaceOrientationWhenFocusedEffect(`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`effect: (interfaceOrientation: InterfaceOrientation) => CleanupFunction \| undefined,`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`dependencies: any[] = [],`<BR>`)` | void | This hook runs under three conditions:<BR><ol><li>When screen has just been focused</li><li>When interface orientation changes while screen is focused</li><li>When a re-render occurs and dependencies change while screen is focused</li></ol>Second argument (dependencies) is optional. When it's not given or an empty array is given, the third condition does not apply.<BR>You can provide a cleanup function that gets called before the effect function must run again or when screen loses focus |

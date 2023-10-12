@@ -1,6 +1,7 @@
 import * as React from "react";
 import type InterfaceOrientation from "../InterfaceOrientation";
 import Orientations, { addInterfaceOrientationChangeListener } from "../manager";
+import type InterfaceOrientationEffect from "../types/InterfaceOrientationEffect";
 
 let useFocusEffect: ((effect: () => ReturnType<React.EffectCallback>) => void) | undefined = undefined;
 
@@ -10,15 +11,13 @@ try
 }
 catch {}
 
-type Effect = (interfaceOrientation: InterfaceOrientation) => ReturnType<React.EffectCallback>;
-
-function useInterfaceOrientationWhenFocusedEffect(effect: Effect): void
+function useInterfaceOrientationWhenFocusedEffect(effect: InterfaceOrientationEffect, deps: React.DependencyList = []): void
 {
     if (!useFocusEffect) throw new Error("'@react-navigation/native' >= 5x package is required to use useInterfaceOrientationWhenFocusedEffect()");
 
-    const effectRef = React.useRef<Effect>(effect);
+    const effectRef = React.useRef<InterfaceOrientationEffect>(effect);
     effectRef.current = effect;
-    
+
     useFocusEffect(React.useCallback(
         () => {
             let cleanupCallback = effectRef.current(Orientations.interfaceOrientation);
@@ -33,7 +32,7 @@ function useInterfaceOrientationWhenFocusedEffect(effect: Effect): void
                 if (typeof cleanupCallback === "function") cleanupCallback();
             };
         },
-        [],
+        deps,
     ));
 }
 
