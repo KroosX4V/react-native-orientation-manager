@@ -10,12 +10,12 @@ public class OrientationManagerActivityLifecycleCallbacks implements ActivityLif
 {
     public void onActivityResumed(@NonNull Activity activity)
     {
-        OrientationManagerModule.enableDeviceOrientationListener();
+        OrientationManagerModule.enableOrientationListener();
     }
 
     public void onActivityPaused(@NonNull Activity activity)
     {
-        OrientationManagerModule.disableDeviceOrientationListener();
+        OrientationManagerModule.disableOrientationListener();
     }
 
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {}

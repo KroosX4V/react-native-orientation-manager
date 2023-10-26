@@ -2,6 +2,7 @@ package com.kroosx4v.orientationmanager;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -42,9 +43,12 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
     @NonNull
     private DeviceOrientation mLastDeviceOrientation = DeviceOrientation.UNKNOWN;
 
+    @Nullable
+    private Boolean mNaturalInterfaceOrientationIsPortrait;
+
     private final InterfaceOrientationChangeDetector mInterfaceOrientationChangeDetector = new InterfaceOrientationChangeDetector();
 
-    static void enableDeviceOrientationListener()
+    static void enableOrientationListener()
     {
         synchronized (OrientationManagerModule.class)
         {
@@ -61,7 +65,7 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
         }
     }
 
-    static void disableDeviceOrientationListener()
+    static void disableOrientationListener()
     {
         synchronized (OrientationManagerModule.class)
         {
@@ -254,22 +258,23 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
     private InterfaceOrientation getInterfaceOrientation()
     {
         final Activity activity = getCurrentActivity();
+        final Boolean naturalInterfaceOrientationIsPortrait = isPortraitNaturalInterfaceOrientation(activity);
 
-        if (activity != null)
+        if (naturalInterfaceOrientationIsPortrait != null)
         {
-            switch ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ? activity.getDisplay() : activity.getWindowManager().getDefaultDisplay()).getRotation())
+            switch (getDisplayRotation(activity))
             {
                 case Surface.ROTATION_0:
-                    return InterfaceOrientation.PORTRAIT;
+                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.PORTRAIT : InterfaceOrientation.LANDSCAPE_LEFT;
 
                 case Surface.ROTATION_90:
-                    return InterfaceOrientation.LANDSCAPE_LEFT;
+                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.LANDSCAPE_LEFT : InterfaceOrientation.PORTRAIT_UPSIDE_DOWN;
 
                 case Surface.ROTATION_180:
-                    return InterfaceOrientation.PORTRAIT_UPSIDE_DOWN;
+                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.PORTRAIT_UPSIDE_DOWN : InterfaceOrientation.LANDSCAPE_RIGHT;
 
                 case Surface.ROTATION_270:
-                    return InterfaceOrientation.LANDSCAPE_RIGHT;
+                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.LANDSCAPE_RIGHT : InterfaceOrientation.PORTRAIT;
             }
         }
 
@@ -278,7 +283,68 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
 
     private DeviceOrientation getDeviceOrientation()
     {
-        return mDeviceOrientationListener.getLastOrientation();
+        final Boolean naturalInterfaceOrientationIsPortrait = isPortraitNaturalInterfaceOrientation();
+        if (naturalInterfaceOrientationIsPortrait == null) return DeviceOrientation.UNKNOWN;
+
+        final DeviceOrientation lastDeviceOrientation = mDeviceOrientationListener.getLastOrientation();
+        if (naturalInterfaceOrientationIsPortrait) return lastDeviceOrientation;
+
+        switch (lastDeviceOrientation)
+        {
+            case PORTRAIT:
+                return DeviceOrientation.LANDSCAPE_LEFT;
+
+            case LANDSCAPE_LEFT:
+                return DeviceOrientation.PORTRAIT_UPSIDE_DOWN;
+
+            case PORTRAIT_UPSIDE_DOWN:
+                return DeviceOrientation.LANDSCAPE_RIGHT;
+
+            case LANDSCAPE_RIGHT:
+                return DeviceOrientation.PORTRAIT;
+
+            default:
+                return lastDeviceOrientation;
+        }
+    }
+
+    private Boolean isPortraitNaturalInterfaceOrientation()
+    {
+        return isPortraitNaturalInterfaceOrientation(null);
+    }
+
+    private Boolean isPortraitNaturalInterfaceOrientation(@Nullable Activity activity)
+    {
+        if (mNaturalInterfaceOrientationIsPortrait != null) return mNaturalInterfaceOrientationIsPortrait;
+        
+        if (activity == null) activity = getCurrentActivity();
+        if (activity == null) return null;
+
+        {
+            final int configOrientation = activity.getResources().getConfiguration().orientation;
+
+            switch (getDisplayRotation(activity))
+            {
+                case Surface.ROTATION_0:
+                case Surface.ROTATION_180:
+
+                    mNaturalInterfaceOrientationIsPortrait = configOrientation == Configuration.ORIENTATION_PORTRAIT;
+                    break;
+
+                case Surface.ROTATION_90:
+                case Surface.ROTATION_270:
+
+                    mNaturalInterfaceOrientationIsPortrait = configOrientation == Configuration.ORIENTATION_LANDSCAPE;
+                    break;
+            }
+        }
+
+        return mNaturalInterfaceOrientationIsPortrait;
+    }
+
+    private int getDisplayRotation(@NonNull Activity activity)
+    {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ? activity.getDisplay() : activity.getWindowManager().getDefaultDisplay()).getRotation();
     }
 
     private void sendEvent(@NonNull String eventName, @Nullable WritableMap params)
