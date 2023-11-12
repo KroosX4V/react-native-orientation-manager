@@ -47,6 +47,7 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
     private Boolean mNaturalInterfaceOrientationIsPortrait;
 
     private final InterfaceOrientationChangeDetector mInterfaceOrientationChangeDetector = new InterfaceOrientationChangeDetector();
+    private boolean mInterfaceOrientationChangeDetectorIsRunning = false;
 
     static void enableOrientationListener()
     {
@@ -60,7 +61,7 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
 
             instance.sendInterfaceOrientationChangedIfOccurred();
 
-            if (instance.mInterfaceOrientationChangedListenerAdded) instance.postInterfaceOrientationChangeDetectorDelayed();
+            if (instance.mInterfaceOrientationChangedListenerAdded) instance.resumeInterfaceOrientationChangeDetection();
             if (instance.mDeviceOrientationChangedListenerAdded) instance.mDeviceOrientationListener.enable();
         }
     }
@@ -178,7 +179,7 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
 
             synchronized (OrientationManagerModule.class)
             {
-                if (enabled) postInterfaceOrientationChangeDetectorDelayed();
+                if (enabled) resumeInterfaceOrientationChangeDetection();
             }
         }
         // @note: At this point eventName must be "deviceOrientationChanged". So, no need to check.
@@ -220,6 +221,17 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
         }
     }
 
+    private void resumeInterfaceOrientationChangeDetection()
+    {
+        synchronized (mInterfaceOrientationChangeDetector)
+        {
+            if (mInterfaceOrientationChangeDetectorIsRunning) return;
+            mInterfaceOrientationChangeDetectorIsRunning = true;
+
+            postInterfaceOrientationChangeDetectorDelayed();
+        }
+    }
+
     private void postInterfaceOrientationChangeDetectorDelayed()
     {
         mHandler.postDelayed(mInterfaceOrientationChangeDetector, 100);
@@ -258,23 +270,27 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
     private InterfaceOrientation getInterfaceOrientation()
     {
         final Activity activity = getCurrentActivity();
-        final Boolean naturalInterfaceOrientationIsPortrait = isPortraitNaturalInterfaceOrientation(activity);
 
-        if (naturalInterfaceOrientationIsPortrait != null)
+        if (activity != null)
         {
-            switch (getDisplayRotation(activity))
+            final Boolean naturalInterfaceOrientationIsPortrait = isPortraitNaturalInterfaceOrientation(activity);
+
+            if (naturalInterfaceOrientationIsPortrait != null)
             {
-                case Surface.ROTATION_0:
-                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.PORTRAIT : InterfaceOrientation.LANDSCAPE_LEFT;
+                switch (getDisplayRotation(activity))
+                {
+                    case Surface.ROTATION_0:
+                        return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.PORTRAIT : InterfaceOrientation.LANDSCAPE_LEFT;
 
-                case Surface.ROTATION_90:
-                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.LANDSCAPE_LEFT : InterfaceOrientation.PORTRAIT_UPSIDE_DOWN;
+                    case Surface.ROTATION_90:
+                        return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.LANDSCAPE_LEFT : InterfaceOrientation.PORTRAIT_UPSIDE_DOWN;
 
-                case Surface.ROTATION_180:
-                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.PORTRAIT_UPSIDE_DOWN : InterfaceOrientation.LANDSCAPE_RIGHT;
+                    case Surface.ROTATION_180:
+                        return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.PORTRAIT_UPSIDE_DOWN : InterfaceOrientation.LANDSCAPE_RIGHT;
 
-                case Surface.ROTATION_270:
-                    return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.LANDSCAPE_RIGHT : InterfaceOrientation.PORTRAIT;
+                    case Surface.ROTATION_270:
+                        return naturalInterfaceOrientationIsPortrait ? InterfaceOrientation.LANDSCAPE_RIGHT : InterfaceOrientation.PORTRAIT;
+                }
             }
         }
 
@@ -370,6 +386,13 @@ public class OrientationManagerModule extends ReactContextBaseJavaModule
                 {
                     sendInterfaceOrientationChangedIfOccurred();
                     postInterfaceOrientationChangeDetectorDelayed();
+                }
+                else
+                {
+                    synchronized (mInterfaceOrientationChangeDetector)
+                    {
+                        mInterfaceOrientationChangeDetectorIsRunning = false;
+                    }
                 }
             }
         }
